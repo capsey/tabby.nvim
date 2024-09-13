@@ -7,8 +7,6 @@ vim.cmd([[
   augroup end
 ]])
 
-local noname_placeholder = '[No Name]'
-
 local function relative(name)
   return vim.fn.fnamemodify(name, ':~:.')
 end
@@ -123,7 +121,7 @@ function unique_names:build(use_bufs)
       processed[bufid] = true
       local name = vim.api.nvim_buf_get_name(bufid)
       if name == '' then
-        self:set(bufid, noname_placeholder)
+        self:set(bufid, name)
       else
         name = relative(name)
         self:insert_index(bufid, tail(name), head(name))
@@ -151,40 +149,43 @@ function filename.flush_unique_name_cache()
   unique_names:init()
 end
 
-local function wrap_name(name)
+local function wrap_name(name, placeholder)
   if (name or '') == '' then
-    return noname_placeholder
+    return placeholder or '[No Name]'
   end
   return name
 end
 
----@param winid number
+---@param bufid number
+---@param placeholder string?
 ---@return string filename
-function filename.relative(bufid)
+function filename.relative(bufid, placeholder)
   local fname = vim.api.nvim_buf_get_name(bufid)
-  return wrap_name(relative(fname))
+  return wrap_name(relative(fname), placeholder)
 end
 
----@param winid number
+---@param bufid number
+---@param placeholder string?
 ---@return string filename
-function filename.tail(bufid)
+function filename.tail(bufid, placeholder)
   local fname = vim.api.nvim_buf_get_name(bufid)
-  return wrap_name(tail(fname))
+  return wrap_name(tail(fname), placeholder)
 end
 
----@param winid number
+---@param bufid number
+---@param placeholder string?
 ---@return string filename
-function filename.shorten(bufid)
+function filename.shorten(bufid, placeholder)
   local fname = vim.api.nvim_buf_get_name(bufid)
-  return wrap_name(shorten(fname))
+  return wrap_name(shorten(fname), placeholder)
 end
 
----@param winid number
----@param use_bufs boolean
+---@param bufid number
+---@param placeholder string?
 ---@return string filename
-function filename.unique(bufid, use_bufs)
+function filename.unique(bufid, placeholder, use_bufs)
   bufs = bufs or false
-  return wrap_name(unique_names:get_name(bufid, use_bufs))
+  return wrap_name(unique_names:get_name(bufid, use_bufs), placeholder)
 end
 
 return filename
