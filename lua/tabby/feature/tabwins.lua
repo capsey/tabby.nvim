@@ -225,7 +225,7 @@ end
 
 ---@class TabbyBufs
 ---@field bufs TabbyBuf[] buffers
----@field foreach fun(fn:fun(buf:TabbyBuf):TabbyNode):TabbyNode render bufs by given render function
+---@field foreach fun(fn:fun(tab:TabbyBuf,i:number,n:number):TabbyNode,props:TabbyNode):TabbyNode render bufs by given render function
 
 ---@alias BufFilter fun(buf:TabbyBuf):boolean filter for buffer
 
@@ -253,13 +253,16 @@ function tabwins.new_bufs(opt, ...)
   end
   return {
     bufs = bufs,
-    foreach = function(fn)
+    foreach = function(fn, props)
       local nodes = {}
-      for _, buf in ipairs(bufs) do
-        local node = fn(buf)
+      for i, buf in ipairs(bufs) do
+        local node = fn(buf, i, #bufs)
         if node ~= nil and node ~= '' then
           nodes[#nodes + 1] = wrap_buf_node(node, buf.id)
         end
+      end
+      if props ~= nil then
+        nodes = vim.tbl_extend('keep', nodes, props)
       end
       return nodes
     end,

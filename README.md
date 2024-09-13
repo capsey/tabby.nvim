@@ -295,7 +295,7 @@ require('tabby').setup({
 ### Line
 
 ```vimdoc
-line.tabs().foreach({callback}, {params})          *tabby.line.tabs().foreach()*
+line.tabs().foreach({callback}, {props})           *tabby.line.tabs().foreach()*
     Use callback function to renderer every tabs.
 
     Parameters: ~
@@ -335,7 +335,7 @@ line.wins({filter...}).foreach({callback}, {props})
 <
 
                                             *tabby.line.wins_in_tab().foreach()*
-line.wins_in_tab({tabid}, {filter...}).foreach({callback})
+line.wins_in_tab({tabid}, {filter...}).foreach({callback}, {props})
     Use callback function to renderer every wins in specified tab.
 
     Parameters: ~
@@ -346,6 +346,7 @@ line.wins_in_tab({tabid}, {filter...}).foreach({callback})
         {callback}   Function, receive a Win |tabby-win|, index and number of
                      wins, return a Node |tabby-node|. Skip render when return
                      is empty string.
+        {props}      Additional properties added to the returned node.
 
     Return: ~
         Node |tabby-node|, rendered result of all wins in specified tab.
@@ -354,15 +355,17 @@ line.wins_in_tab({tabid}, {filter...}).foreach({callback})
         - Don't display NvimTree: See |tabby.line.wins().foreach()|.
 
                                             *tabby.line.bufs().foreach()*
-line.bufs({filter...}).foreach({callback})
+line.bufs({filter...}).foreach({callback}, {props})
     Use callback function to renderer every bufs.
 
     Parameters: ~
         {filter...}  Filter functions. Each function receive a |tabby-buf| and
                      return a boolean. If filter return false, this window won't
                      be displayed in tabline.
-        {callback}   Function, receive a Buf |tabby-buf|, return a
-                     Node |tabby-node|. Skip render when return is empty string.
+        {callback}   Function, receive a Buf |tabby-buf|, index and number of
+                     bufs, return a Node |tabby-node|. Skip render when return
+                     is empty string.
+        {props}      Additional properties added to the returned node.
 
     Return: ~
         Node |tabby-node|, rendered result of all bufs.
